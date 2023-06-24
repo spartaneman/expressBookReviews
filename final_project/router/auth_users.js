@@ -39,9 +39,16 @@ regd_users.post("/login", (req,res) => {
     res.status(404).json({status: "fail", message: "Error Loggin In"})
   }
   if(authenticatedUser(username, password)){
+    let accessToken = jwt.sign({data: password}, 'access', {expiresIn: 60*60});
 
+    req.session.authorization = { accessToken, username};
+    return res.status(200).send("User successfully logged in");
   }
-  return res.status(300).json({message: "Yet to be implemented"});
+  else{
+    return res.status(208)
+    .json({status: "fail", message: "Invalid Login. Check username and password"});
+  }
+  
 });
 
 // Add a book review
