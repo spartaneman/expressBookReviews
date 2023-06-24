@@ -9,9 +9,16 @@ public_users.post("/register", (req,res) => {
   const username = req.params.username;
   const password = req.params.username;
 
-  
-
-  return res.status(300).json({message: "Yet to be implemented"});
+  if(!username || !password){
+    return res.status(404).json({status: "Failed", message: "Missing Information"});
+  }
+  if(isValid(username)){
+    users.push({"username":username, "password":password});
+    return res.status(200).json({status: "success", message: "User Registered"});
+  }
+  else{
+    return res.status(208).json({status: "fail", message: "User already exists"});
+  }
 });
 
 // Get the book list available in the shop
