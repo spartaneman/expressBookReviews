@@ -96,5 +96,86 @@ public_users.get("/review/:isbn", function (req, res) {
   
 });
 
+/** PROMISES - ASYNC */
+public_users.get('/books', (req, res)=>{
+  const get_books = async()=>{
+    res.send(JSON.stringify({books}, null, 4))
+    console.log("Task 10: Successfully sent books ")
+  }
+  
+  get_books();
+})
+
+// TASK 10 - Get the book list available in the shop using promises
+public_users.get('/books/isbn/:isbn',function (req, res) {
+
+  const get_books = new Promise((resolve, reject) => {
+      const isbn = req.params.isbn;
+      const iBook = books[isbn];
+      if(iBook){
+        resolve(res.status(200).json(iBook));
+        console.log("Book located")
+      }
+      else{
+        reject(res.status(404).json({status: "failed", message: "Unable to locate books"}));
+      }
+      
+    });
+
+    get_books.then(() => console.log("Promise for Task 11 resolved"))
+    .catch(()=> console.log("Book could not be located"));
+
+});
+
+public_users.get("/books/author/:author", function (req, res) {
+
+  const get_books = new Promise((resolve, reject)=>{
+    const author = req.params.author;
+    let aBooks = bookList.filter((book) => {
+      return book.author === author;
+    });
+    if (aBooks.length > 0) {
+      resolve(
+        res
+        .status(200)
+        .json(aBooks)
+      ); 
+    } else {
+      reject(
+        res.status(404)
+        .json({ status: "failed", message: "Author not found in our database" })
+      );
+        
+  }
+  });
+  
+  get_books.then(() => console.log("Promise for Task 12 resolved"))
+  .catch(()=> console.log("Author could not be located"));
+});
+
+public_users.get("/books/title/:title", function (req, res) {
+
+  const get_books = new Promise((resolve, reject)=>{
+    const title = req.params.title;
+    let tBooks = bookList.filter((book) => {
+    return book.title === title;
+  });
+  if (tBooks.length > 0) {
+    resolve(res
+      .status(200)
+      .json({ "booksbytitle": tBooks} )) ;
+  } else {
+    reject(res
+      .status(404)
+      .json({ status: "fail", message: "T not found in our database" }));
+  }
+  });
+
+  get_books.then(() => console.log("Promise for Task 13 resolved"))
+  .catch(()=> console.log("Title could not be located"));
+  
+});
+
+
 module.exports.general = public_users;
 
