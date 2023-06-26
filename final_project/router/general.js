@@ -2,6 +2,7 @@ const express = require("express");
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
+
 const public_users = express.Router();
 bookList = Object.values(books);
 
@@ -20,7 +21,7 @@ public_users.post("/register", (req, res) => {
     users.push({ username: username, password: password });
     return res
       .status(200)
-      .json({ status: "success", message: "User Registered" });
+      .json({ status: "success", message: "Customer successfully registered. Now you can login" });
   } else {
     return res
       .status(208)
@@ -30,16 +31,7 @@ public_users.post("/register", (req, res) => {
 
 // Get the book list available in the shop
 public_users.get("/", function (req, res) {
-  return res.status(200).json(
-    JSON.stringify(
-      {
-        status: "success",
-        data: { books },
-      },
-      null,
-      1
-    )
-  );
+  return res.status(200).json(books)
 });
 
 // Get book details based on ISBN
@@ -49,7 +41,7 @@ public_users.get("/isbn/:isbn", function (req, res) {
   if (iBooks) {
     return res
       .status(200)
-      .json(JSON.stringify({ status: "success", data: { iBooks } }));
+      .json(iBooks);
   } else {
     return res
       .status(404)
@@ -66,7 +58,7 @@ public_users.get("/author/:author", function (req, res) {
   if (iBooks.length > 0) {
     return res
       .status(200)
-      .json(JSON.stringify({ status: "success", data: { iBooks } }));
+      .json(iBooks);
   } else {
     return res
       .status(404)
@@ -83,7 +75,7 @@ public_users.get("/title/:title", function (req, res) {
   if (iBooks.length > 0) {
     return res
       .status(200)
-      .json(JSON.stringify({ status: "success", data: { iBooks } }));
+      .json({ "booksbytitle": iBooks} );
   } else {
     return res
       .status(404)
@@ -96,7 +88,7 @@ public_users.get("/review/:isbn", function (req, res) {
   const isbn = req.params.isbn;
   let bReview = books[isbn];
   if(bReview){
-    return res.status(200).json(JSON.stringify(bReview.reviews))
+    return res.status(200).json({"reviews" :bReview.reviews})
   }
   else{
     return res.status(200).json({ message: "Review not found" });
